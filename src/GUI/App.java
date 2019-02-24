@@ -9,6 +9,7 @@ import Logic.Producer;
 import GUI.Buttons.FireBtn;
 import GUI.Buttons.HireBtn;
 import Logic.Restaurant;
+import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Image;
@@ -19,6 +20,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JTextField;
 
 /**
  *
@@ -54,9 +56,15 @@ public class App extends JFrame {
     private final JLabel eChef;
     private final JLabel dChef;
 
-    private final Restaurant restaurant;
+    //  Text Labels
+    private final JLabel wLabel;
+    private final JLabel eLabel;
+    private final JLabel mLabel;
+    private final JLabel dLabel;
 
-    public App(final int width, final int height, final JFrame parent, Restaurant restaurant) {
+    private Restaurant restaurant;
+
+    public App(final int width, final int height, final JFrame parent) {
         this.width = width;
         this.height = height;
         this.parent = parent;
@@ -152,11 +160,21 @@ public class App extends JFrame {
         this.waiter.setIcon(new ImageIcon(this.w.getImage().getScaledInstance((this.lblHeight * 211) / 499, this.lblHeight, Image.SCALE_SMOOTH)));
         this.waiter.setLocation((this.width * 44) / 100, this.height - this.lblHeight - (this.height * 15) / 100);
 
+        this.wLabel = new JLabel();
+        this.wLabel.setSize(new Dimension((this.smallSquareBtnSize + 3), (this.smallSquareBtnSize + 3)));
+        this.wLabel.setBackground(Color.yellow);
+        this.wLabel.setLocation((this.width * 44) / 100, (this.height * 35) / 100);
+
         this.ec = new ImageIcon(getClass().getResource("/Img/Avatars/4.-Entries-Chef.png"));
         this.eChef = new JLabel();
         this.eChef.setSize(new Dimension((this.lblHeight * 211) / 499, this.lblHeight));
         this.eChef.setIcon(new ImageIcon(this.ec.getImage().getScaledInstance((this.lblHeight * 211) / 499, this.lblHeight, Image.SCALE_SMOOTH)));
         this.eChef.setLocation((this.width * 61) / 100, this.height - this.lblHeight - (this.height * 15) / 100);
+
+        this.eLabel = new JLabel();
+        this.eLabel.setSize(new Dimension((this.smallSquareBtnSize + 3), (this.smallSquareBtnSize + 3)));
+        this.eLabel.setBackground(Color.yellow);
+        this.eLabel.setLocation((this.width * 61) / 100, (this.height * 35) / 100);
 
         this.mc = new ImageIcon(getClass().getResource("/Img/Avatars/5.-Main-Chef.png"));
         this.mChef = new JLabel();
@@ -164,11 +182,21 @@ public class App extends JFrame {
         this.mChef.setIcon(new ImageIcon(this.mc.getImage().getScaledInstance((this.lblHeight * 211) / 499, this.lblHeight, Image.SCALE_SMOOTH)));
         this.mChef.setLocation((this.width * 74) / 100, this.height - this.lblHeight - (this.height * 15) / 100);
 
+        this.mLabel = new JLabel();
+        this.mLabel.setSize(new Dimension((this.smallSquareBtnSize + 3), (this.smallSquareBtnSize + 3)));
+        this.mLabel.setBackground(Color.yellow);
+        this.mLabel.setLocation((this.width * 74) / 100, (this.height * 35) / 100);
+
         this.dc = new ImageIcon(getClass().getResource("/Img/Avatars/6.-Desserts-Chef.png"));
         this.dChef = new JLabel();
         this.dChef.setSize(new Dimension((this.lblHeight * 211) / 499, this.lblHeight));
         this.dChef.setIcon(new ImageIcon(this.dc.getImage().getScaledInstance((this.lblHeight * 211) / 499, this.lblHeight, Image.SCALE_SMOOTH)));
         this.dChef.setLocation((this.width * 87) / 100, this.height - this.lblHeight - (this.height * 15) / 100);
+
+        this.dLabel = new JLabel();
+        this.dLabel.setSize(new Dimension((this.smallSquareBtnSize + 3), (this.smallSquareBtnSize + 3)));
+        this.dLabel.setBackground(Color.yellow);
+        this.dLabel.setLocation(10, 10);
 
         this.h1 = new HireBtn((this.smallSquareBtnSize + 10), ((this.smallSquareBtnSize + 10) * 132) / 202, (this.width * 65) / 100, this.height - (this.height * 12) / 100);
         this.h1.addActionListener(new ActionListener() {
@@ -251,8 +279,11 @@ public class App extends JFrame {
         this.background.add(this.f2);
         this.background.add(this.f3);
         this.background.add(this.f4);
+        this.background.add(this.wLabel);
+        this.background.add(this.eLabel);
+        this.background.add(this.mLabel);
+        this.background.add(this.dLabel);
 
-        this.restaurant = restaurant;
     }
 
     private void hideBtnActionPerformed() {
@@ -284,19 +315,24 @@ public class App extends JFrame {
     }
 
     private void fire1ActionPerformed() {
-        this.restaurant.fireEntryChef();
+        //this.restaurant.fireEntryChef();
     }
 
     private void fire2ActionPerformed() {
-        this.restaurant.fireMainChef();
+        //this.restaurant.fireMainChef();
     }
 
     private void fire3ActionPerformed() {
-        this.restaurant.fireDessertChef();
+        //this.restaurant.fireDessertChef();
     }
 
     private void fire4ActionPerformed() {
-        this.restaurant.fireWaiter();
+        //this.restaurant.fireWaiter();
+    }
+
+    public void start() {
+        //this.restaurant = new Restaurant(8, 6, 4, 2, 3, 6, 30, 20, 10, 2, 1, 0, 2);
+        this.restaurant = new Restaurant(3, 4, 2, 6, 1, 2, 2, 2, 20, 30, 10);
     }
 
 }

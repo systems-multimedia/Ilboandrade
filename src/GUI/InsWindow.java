@@ -39,7 +39,6 @@ public class InsWindow extends JFrame {
     
     private final InfoWindow infoWindow;
     private App app;
-    private Restaurant restaurant;
 
     public InsWindow(final int width, final int height, final JFrame parent) {
         this.width = width;
@@ -155,8 +154,9 @@ public class InsWindow extends JFrame {
     }
 
     private void startBtnActionPerformed() {
-        this.restaurant = new Restaurant(8, 6, 4, 2, 3, 6, 30, 20, 10, 2, 1, 0, 2);
-        this.app = new App(width, height, this, this.restaurant);
+        
+        this.app = new App(width, height, this);
+        this.app.start();
         this.app.setVisible(true);
         this.app.setEnabled(true);
 

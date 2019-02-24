@@ -6,83 +6,95 @@ import java.util.logging.Logger;
 
 public class Consumer extends Thread {
 
-    private final Meson mMain, mDessert, mEntry;
-    private final Semaphore sMainMutex;
-    private final Semaphore sEntryMutex;
-    private final Semaphore sDessertMutex;
-    private final Semaphore sMainConsumer;
-    private final Semaphore sEntryConsumer;
-    private final Semaphore sDessertConsumer;
-    private final Semaphore sMainChef;
-    private final Semaphore sEntryChef;
-    private final Semaphore sDessertChef;
-    private final int time;
-    private boolean hire;
+    private Meson eMes, mMes, dMes;
+    private Semaphore seMutex, seProd, seCon;
+    private Semaphore smMutex, smProd, smCon;
+    private Semaphore sdMutex, sdProd, sdCon;
+    private boolean hired;
+    private int time;
 
-    //****** WAITER *********
-    public Consumer(Meson mMain, Meson mEntry, Meson mDessert, Semaphore sMainMutex, Semaphore sEntryMutex, Semaphore sDessertMutex, Semaphore sMainConsumer, Semaphore sEntryConsumer, Semaphore sDessertConsumer, Semaphore sMainChef, Semaphore sEntryChef, Semaphore sDessertChef, int time) {
-        this.mMain = mMain;
-        this.mEntry = mEntry;
-        this.mDessert = mDessert;
-        this.sMainMutex = sMainMutex;
-        this.sEntryMutex = sEntryMutex;
-        this.sDessertMutex = sDessertMutex;
-        this.sMainConsumer = sMainConsumer;
-        this.sEntryConsumer = sEntryConsumer;
-        this.sDessertConsumer = sDessertConsumer;
-        this.sMainChef = sMainChef;
-        this.sEntryChef = sEntryChef;
-        this.sDessertChef = sDessertChef;
+    public Consumer(Semaphore mutex, Semaphore sProd, Semaphore sCon) {
+        this.seMutex = mutex;
+        this.seProd = sProd;
+        this.seCon = sCon;
+        this.hired = true;
+    }
+
+    public Consumer(Semaphore seMutex, Semaphore seProd, Semaphore seCon, Semaphore smMutex, Semaphore smProd, Semaphore smCon) {
+        this.seMutex = seMutex;
+        this.seProd = seProd;
+        this.seCon = seCon;
+        this.smMutex = smMutex;
+        this.smProd = smProd;
+        this.smCon = smCon;
+        this.hired = true;
+    }
+
+    public Consumer(Semaphore seMutex, Semaphore seProd, Semaphore seCon, Semaphore smMutex, Semaphore smProd, Semaphore smCon, Semaphore sdMutex, Semaphore sdProd, Semaphore sdCon) {
+        this.seMutex = seMutex;
+        this.seProd = seProd;
+        this.seCon = seCon;
+        this.smMutex = smMutex;
+        this.smProd = smProd;
+        this.smCon = smCon;
+        this.sdMutex = sdMutex;
+        this.sdProd = sdProd;
+        this.sdCon = sdCon;
+        this.hired = true;
+    }
+
+    public Consumer(Meson eMes, Meson mMes, Meson dMes, Semaphore seMutex, Semaphore seProd, Semaphore seCon, Semaphore smMutex, Semaphore smProd, Semaphore smCon, Semaphore sdMutex, Semaphore sdProd, Semaphore sdCon, int time) {
+        this.eMes = eMes;
+        this.mMes = mMes;
+        this.dMes = dMes;
+        this.seMutex = seMutex;
+        this.seProd = seProd;
+        this.seCon = seCon;
+        this.smMutex = smMutex;
+        this.smProd = smProd;
+        this.smCon = smCon;
+        this.sdMutex = sdMutex;
+        this.sdProd = sdProd;
+        this.sdCon = sdCon;
         this.time = time;
-        this.hire = true;
+        this.hired = true;
     }
 
     @Override
     public void run() {
-        while (true) {
+        while (this.hired) {
             try {
-                System.out.println("1 Acquire Consumer");
-                this.sEntryConsumer.acquire(3);
-                //  CS ENTRIES
-                this.sEntryMutex.acquire();
-                System.out.println("Entry Mutex Acquire Consumer");
+                this.seCon.acquire(3);
+                this.seMutex.acquire();
                 for (int i = 0; i < 3; i++) {
-                    this.mEntry.cook(Restaurant.entryMesPointer, 0);
-                    Restaurant.entryMesPointer = (Restaurant.entryMesPointer + 1) % this.mEntry.getSize();
+                    this.eMes.cook(Restaurant.eCosPointer, 0);
+                    Restaurant.eCosPointer = (Restaurant.eCosPointer + 1) % this.eMes.getSize();
+                    Restaurant.subEntryCount();
+                    System.out.println("Consumer entry " + this.getName() + " || Queue => " + seCon.getQueueLength());
                 }
-                Restaurant.substractEntry();    // # OF ENTRIES - 3
-                this.sEntryMutex.release();
-                
-                System.out.println("2 Acquire Consumer");
-                this.sMainConsumer.acquire(2); 
-                //  CS MAIN DISHES
-                this.sMainMutex.acquire();
-                System.out.println("Main Mutex Acquire Consumer");
+                this.seMutex.release();
+                this.seProd.release(3);
+
+                this.smCon.acquire(2);
+                this.smMutex.acquire();
                 for (int i = 0; i < 2; i++) {
-                    this.mMain.cook(Restaurant.mainMesPointer, 0);
-                    Restaurant.mainMesPointer = (Restaurant.mainMesPointer + 1) % this.mMain.getSize();
+                    this.mMes.cook(Restaurant.mCosPointer, 0);
+                    Restaurant.mCosPointer = (Restaurant.mCosPointer + 1) % this.mMes.getSize();
+                    Restaurant.subMainCount();
+                    System.out.println("Consumer main " + this.getName() + " || Queue => " + seCon.getQueueLength());
                 }
-                Restaurant.substractMain();     //  # OF MAIN DISHES -2
-                this.sMainMutex.release();
-                this.sDessertConsumer.acquire();
-                System.out.println("3 Acquire Consumer");
+                this.smMutex.release();
+                this.smProd.release(2);
 
-                
+                this.sdCon.acquire();
+                this.sdMutex.acquire();
+                this.dMes.cook(Restaurant.dCosPointer, 0);
+                Restaurant.dCosPointer = (Restaurant.dCosPointer + 1) % this.dMes.getSize();
+                Restaurant.subDesCount();
+                System.out.println("Consumer dessert " + this.getName() + " || Queue => " + seCon.getQueueLength());
+                this.sdMutex.release();
+                this.sdProd.release();
 
-                //  CS DESSERTS
-                this.sDessertMutex.acquire();
-                System.out.println("Dessert Mutex Acquire Consumer");
-                this.mDessert.cook(Restaurant.dessertMesPointer, 0);
-                Restaurant.dessertMesPointer = (Restaurant.dessertMesPointer + 1) % this.mDessert.getSize();
-                Restaurant.substractDessert();  //  # OF DESSERTS - 1
-                this.sDessertMutex.release();
-
-                //  RELEASING CHEFS
-                this.sEntryChef.release(3);
-                this.sMainChef.release(2);
-                this.sDessertChef.release();
-
-                //  SERVING THE FOOD
                 this.Serve();
             } catch (InterruptedException ex) {
                 Logger.getLogger(Consumer.class.getName()).log(Level.SEVERE, null, ex);
@@ -90,14 +102,12 @@ public class Consumer extends Thread {
         }
     }
 
-    private void Serve() {
-
-        //Thread.sleep(this.time);
-        System.out.println("Food served");
+    private void Serve() throws InterruptedException {
+        Thread.sleep(this.time);
+        System.out.println("Served");
     }
 
     public void Fire() {
-        this.hire = false;
-        System.out.println("Waiter Fired");
+        this.hired = false;
     }
 }

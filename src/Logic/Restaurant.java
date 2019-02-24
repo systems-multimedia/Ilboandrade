@@ -9,117 +9,88 @@ import javax.swing.JOptionPane;
 public class Restaurant {
 
     //  SEMAPHORES
-    private Semaphore smMutex, sdMutex, seMutex;
-    private Semaphore sMainConsumer, sEntryConsumer, sDessertConsumer;
-    private Semaphore sMainChef, sEntryChef, sDessertChef;
+    private Semaphore seMutex, smMutex, seProd, smProd, seCon, smCon, sdMutex, sdProd, sdCon;
 
-    //  PRODUCERS AND CONSUMERS
-    //  Food
-    private Meson mainMes, entryMes, dessertMes;
+    //  MESONS
+    private Meson eMes, mMes, dMes;
 
-    //  Producers
-    private Producer[] mainChef, dessertChef, entryChef;
+    //  PRODUCERS
+    private Producer[] eProd, mProd, dProd;
 
-    //  Consumers
+    //  WAITERS
     private Consumer[] waiters;
 
-    //  Producers' and Consumers' counters
-    private int mainChefCounter, entryChefCounter, dessertChefCounter, waitersCounter;
+    //  WORKERS COUNTERS
+    private int eProdCounter, mProdCounter, dProdCounter, wCounter;
 
-    //  Producers' and Consumer's pointers
-    public static int mainChefPointer, entryChefPointer, dessertChefPointer, mainMesPointer, entryMesPointer, dessertMesPointer;
+    //  FOOD COUNTERS
+    private static int eCount, mCount, dCount;
 
-    //  Counter for each kind of food
-    private static int mainDishCounter, entryDishCounter, dessertDishCounter;
+    //  POINTERS
+    public static int ePointer, mPointer, dPointer, eCosPointer, mCosPointer, dCosPointer;
 
-    //  Time of work - How much time should be a day
-    private int workHours;
+    public Restaurant(int eProdLimit, int mProdLimit, int dProdLimit, int waitersLimit, int eProdInit, int mProdInit, int dProdInit, int waiterInit, int eMesLimit, int mMesLimit, int dMesLimit) {
 
-    private int hoursForClosing;
+        this.eMes = new Meson(eMesLimit);
+        this.mMes = new Meson(mMesLimit);
+        this.dMes = new Meson(dMesLimit);
 
-    public Restaurant(int workHours, int hoursForClosing, int mainChefLimit, int dessertChefLimit, int entryChefLimit, int waitersLimit, int mainMesLimit, int entryMesLimit, int dessertMesLimit, int initMainChef, int initEntryChef, int initDessertChef, int initWaiters) {
+        this.seProd = new Semaphore(eMesLimit);
+        this.smProd = new Semaphore(mMesLimit);
+        this.sdProd = new Semaphore(dMesLimit);
 
-        //  INITIALIZING HOURS
-        this.workHours = workHours;
-        this.hoursForClosing = hoursForClosing;
-
-        //  INITIALIZING MESONS
-        this.mainMes = new Meson(mainMesLimit);
-        this.entryMes = new Meson(entryMesLimit);
-        this.dessertMes = new Meson(dessertMesLimit);
-
-        //  INITIALIZING COUNTERS AND POINTERS
-        Restaurant.mainDishCounter = 0;
-        Restaurant.entryDishCounter = 0;
-        Restaurant.dessertDishCounter = 0;
-
-        Restaurant.mainChefPointer = 0;
-        Restaurant.entryChefPointer = 0;
-        Restaurant.dessertChefPointer = 0;
-
-        Restaurant.mainMesPointer = 0;
-        Restaurant.entryMesPointer = 0;
-        Restaurant.dessertMesPointer = 0;
-
-        //  INITIALIZING SEMAPHORES
-        this.sMainChef = new Semaphore(mainChefLimit);
-        this.sEntryChef = new Semaphore(entryChefLimit);
-        this.sDessertChef = new Semaphore(dessertChefLimit);
-
-        this.smMutex = new Semaphore(1);
         this.seMutex = new Semaphore(1);
+        this.smMutex = new Semaphore(1);
         this.sdMutex = new Semaphore(1);
 
-        this.sMainConsumer = new Semaphore(0);
-        this.sEntryConsumer = new Semaphore(0);
-        this.sDessertConsumer = new Semaphore(0);
+        this.seCon = new Semaphore(0);
+        this.smCon = new Semaphore(0);
+        this.sdCon = new Semaphore(0);
 
-        this.mainMes = new Meson(mainChefLimit);
-        this.entryMes = new Meson(entryChefLimit);
-        this.dessertMes = new Meson(dessertChefLimit);
-
-        this.mainChef = new Producer[mainChefLimit];
-        this.dessertChef = new Producer[dessertChefLimit];
-        this.entryChef = new Producer[entryChefLimit];
+        this.eProd = new Producer[eProdLimit];
+        this.mProd = new Producer[mProdLimit];
+        this.dProd = new Producer[dProdLimit];
         this.waiters = new Consumer[waitersLimit];
 
-        //  HIRING INITIAL PRODUCERS
-        for (int i = 0; i < initEntryChef; i++) {
+        Restaurant.ePointer = 0;
+        Restaurant.mPointer = 0;
+        Restaurant.dPointer = 0;
+
+        Restaurant.eCosPointer = 0;
+        Restaurant.mCosPointer = 0;
+        Restaurant.dCosPointer = 0;
+
+        Restaurant.eCount = 0;
+        Restaurant.mCount = 0;
+        Restaurant.dCount = 0;
+
+        for (int i = 0; i < eProdInit; i++) {
             this.hireEntryChef();
         }
 
-        for (int i = 0; i < initMainChef; i++) {
+        for (int i = 0; i < mProdInit; i++) {
             this.hireMainChef();
         }
 
-        for (int i = 0; i < initDessertChef; i++) {
+        for (int i = 0; i < dProdInit; i++) {
             this.hireDessertChef();
         }
 
-        //  HIRING INITIAL WAITERS
-        for (int i = 0; i < initWaiters; i++) {
+        for (int i = 0; i < waiterInit; i++) {
             this.hireWaiter();
-
         }
-
     }
 
-    public int getHour() {
-        return (this.workHours * 1000) / 8;
-    }
-
-    //  Timer View Remember me
-    public boolean hireMainChef() {
-        System.out.println("*\n*\n*\n*\n*\nHiring Main Chef\n*\n*\n*\n*\n*\n");
-        if (this.mainChefCounter == this.mainChef.length) {
+    public boolean hireEntryChef() {
+        if (this.eProdCounter == this.eProd.length) {
             JOptionPane.showMessageDialog(null, "Can't hire any more Chef!");
             return false;
         } else {
-            for (int i = 0; i < this.mainChef.length; i++) {
-                if (this.mainChef[i] == null) {
-                    this.mainChef[i] = new Producer(this.mainMes, this.smMutex, this.sMainChef, this.sMainConsumer, this.getHour() / 3, 2);
-                    this.mainChef[i].start();
-                    this.mainChefCounter++;
+            for (int i = 0; i < this.eProd.length; i++) {
+                if (this.eProd[i] == null) {
+                    this.eProd[i] = new Producer(eMes, seMutex, seProd, seCon, 1000, 1);
+                    this.eProd[i].start();
+                    this.eProdCounter++;
 
                     return true;
                 }
@@ -129,17 +100,16 @@ public class Restaurant {
         return false;
     }
 
-    public boolean hireEntryChef() {
-        System.out.println("*\n*\n*\n*\n*\nHiring Entry Chef\n*\n*\n*\n*\n*\n");
-        if (this.entryChefCounter == this.entryChef.length) {
+    public boolean hireMainChef() {
+        if (this.mProdCounter == this.mProd.length) {
             JOptionPane.showMessageDialog(null, "Can't hire any more Chef!");
             return false;
         } else {
-            for (int i = 0; i < this.entryChef.length; i++) {
-                if (this.entryChef[i] == null) {
-                    this.entryChef[i] = new Producer(this.entryMes, this.seMutex, this.sEntryChef, this.sEntryConsumer, this.getHour() / 4, 1);
-                    this.entryChef[i].start();
-                    this.entryChefCounter++;
+            for (int i = 0; i < this.mProd.length; i++) {
+                if (this.mProd[i] == null) {
+                    this.mProd[i] = new Producer(mMes, smMutex, smProd, smCon, 1200, 2);
+                    this.mProd[i].start();
+                    this.mProdCounter++;
 
                     return true;
                 }
@@ -150,16 +120,15 @@ public class Restaurant {
     }
 
     public boolean hireDessertChef() {
-        System.out.println("*\n*\n*\n*\n*\nHiring Dessert Chef\n*\n*\n*\n*\n*\n");
-        if (this.dessertChefCounter == this.dessertChef.length) {
+        if (this.dProdCounter == this.dProd.length) {
             JOptionPane.showMessageDialog(null, "Can't hire any more Chef!");
             return false;
         } else {
-            for (int i = 0; i < this.dessertChef.length; i++) {
-                if (this.dessertChef[i] == null) {
-                    this.dessertChef[i] = new Producer(this.dessertMes, this.sdMutex, this.sDessertChef, this.sDessertConsumer, (this.getHour() * 30) / 10, 3);
-                    this.dessertChef[i].start();
-                    this.dessertChefCounter++;
+            for (int i = 0; i < this.dProd.length; i++) {
+                if (this.dProd[i] == null) {
+                    this.dProd[i] = new Producer(dMes, sdMutex, sdProd, sdCon, 1100, 1);
+                    this.dProd[i].start();
+                    this.dProdCounter++;
 
                     return true;
                 }
@@ -170,150 +139,133 @@ public class Restaurant {
     }
 
     public boolean hireWaiter() {
-        System.out.println("*\n*\n*\n*\n*\nHiring Waiter\n*\n*\n*\n*\n*\n");
-        if (this.waitersCounter == this.waiters.length) {
+        if (this.wCounter == this.waiters.length) {
             JOptionPane.showMessageDialog(null, "Can't hire any more Waiter!");
             return false;
         } else {
-            for (int i = 0; i < this.waiters.length; i++) {
+            for (int i = 0; i < this.dProd.length; i++) {
                 if (this.waiters[i] == null) {
-                    this.waiters[i] = new Consumer(this.mainMes, this.entryMes, this.dessertMes, this.smMutex, this.seMutex, this.sdMutex, this.sMainChef, this.sEntryChef, this.sDessertChef, this.sMainConsumer, this.sEntryConsumer, this.sDessertConsumer, this.getHour());
+                    this.waiters[i] = new Consumer(eMes, mMes, dMes, seMutex, seProd, seCon, smMutex, smProd, smCon, sdMutex, sdProd, sdCon, 2000);
                     this.waiters[i].start();
-                    this.waitersCounter++;
+                    this.wCounter++;
 
                     return true;
                 }
             }
         }
-
-        return false;
-    }
-
-    public boolean fireMainChef() {
-        if (this.mainChefCounter < 0) {
-            JOptionPane.showMessageDialog(null, "There's no any more Chef!");
-            return false;
-        } else {
-            for (int i = this.mainChef.length - 1; i >= 0; i--) {
-                if (this.mainChef[i] != null) {
-                    this.mainChef[i].Fire();
-                    this.mainChef[i] = null;
-                    this.mainChefCounter--;
-
-                    return true;
-                }
-            }
-        }
-        System.out.println("Main Chef Fired");
 
         return false;
     }
 
     public boolean fireEntryChef() {
-        if (this.entryChefCounter < 0) {
-            JOptionPane.showMessageDialog(null, "There's no any more Chef!");
+        if (this.eProdCounter < 0) {
+            JOptionPane.showMessageDialog(null, "There's no any more chef!");
             return false;
         } else {
-            for (int i = this.entryChef.length - 1; i >= 0; i--) {
-                if (this.entryChef[i] != null) {
-                    this.entryChef[i].Fire();
-                    this.entryChef[i] = null;
-                    this.entryChefCounter--;
-
+            for (int i = this.eProd.length; i >= 0; i--) {
+                if (this.eProd[i] != null) {
+                    this.eProd[i].Fire();
+                    this.eProd[i] = null;
+                    this.eProdCounter--;
+                    
                     return true;
                 }
             }
         }
-
-        System.out.println("Entry Chef Fired");
-
+        
         return false;
     }
-
-    public boolean fireDessertChef() {
-        if (this.dessertChefCounter < 0) {
-            JOptionPane.showMessageDialog(null, "There's no any more Chef!");
+    
+    public boolean fireMainChef() {
+        if (this.mProdCounter < 0) {
+            JOptionPane.showMessageDialog(null, "There's no any more chef!");
             return false;
         } else {
-            for (int i = this.dessertChef.length - 1; i >= 0; i--) {
-                if (this.dessertChef[i] != null) {
-                    this.dessertChef[i].Fire();
-                    this.dessertChef[i] = null;
-                    this.dessertChefCounter--;
-
+            for (int i = this.mProd.length; i >= 0; i--) {
+                if (this.mProd[i] != null) {
+                    this.mProd[i].Fire();
+                    this.mProd[i] = null;
+                    this.mProdCounter--;
+                    
                     return true;
                 }
             }
         }
-
-        System.out.println("Dessert Chef Fired");
+        
         return false;
     }
-
+    
+    public boolean fireDesChef() {
+        if (this.dProdCounter < 0) {
+            JOptionPane.showMessageDialog(null, "There's no any more chef!");
+            return false;
+        } else {
+            for (int i = this.dProd.length; i >= 0; i--) {
+                if (this.dProd[i] != null) {
+                    this.dProd[i].Fire();
+                    this.dProd[i] = null;
+                    this.dProdCounter--;
+                    
+                    return true;
+                }
+            }
+        }
+        
+        return false;
+    }
+    
     public boolean fireWaiter() {
-        if (this.waitersCounter < 0) {
-            JOptionPane.showMessageDialog(null, "There's no any more Waiter!");
+        if (this.wCounter < 0) {
+            JOptionPane.showMessageDialog(null, "There's no any more chef!");
             return false;
         } else {
-            for (int i = this.waiters.length - 1; i >= 0; i--) {
+            for (int i = this.waiters.length; i >= 0; i--) {
                 if (this.waiters[i] != null) {
                     this.waiters[i].Fire();
                     this.waiters[i] = null;
-                    this.waitersCounter--;
-
+                    this.wCounter--;
+                    
                     return true;
                 }
             }
         }
-
+        
         return false;
     }
 
-    public static void addMain() {
-        Restaurant.mainDishCounter++;
+    public static void addEntryCount() {
+        Restaurant.eCount++;
     }
 
-    public static void addEntry() {
-        Restaurant.entryDishCounter++;
+    public static void addMainCount() {
+        Restaurant.mCount++;
     }
 
-    public static void addDessert() {
-        Restaurant.dessertDishCounter++;
+    public static void addDesCount() {
+        Restaurant.dCount++;
     }
 
-    public static void substractMain() {
-        Restaurant.mainDishCounter -= 2;
+    public static void subEntryCount() {
+        Restaurant.eCount--;
     }
 
-    public static void substractEntry() {
-        Restaurant.entryDishCounter -= 3;
+    public static void subMainCount() {
+        Restaurant.mCount--;
     }
 
-    public static void substractDessert() {
-        Restaurant.dessertDishCounter--;
-    }
-
-    public int getMainCount() {
-        return Restaurant.mainDishCounter;
+    public static void subDesCount() {
+        Restaurant.dCount--;
     }
 
     public int getEntryCount() {
-        return Restaurant.entryDishCounter;
+        return Restaurant.eCount;
     }
 
-    public int getDessertCount() {
-        return Restaurant.dessertDishCounter;
+    public int getMainCount() {
+        return Restaurant.mCount;
     }
 
-    public int getMainChefCount() {
-        return this.mainChefCounter;
-    }
-
-    public int getEntryChefCount() {
-        return this.entryChefCounter;
-    }
-
-    public int getDessertChefCount() {
-        return this.dessertChefCounter;
+    public int getDesCount() {
+        return Restaurant.dCount;
     }
 }
