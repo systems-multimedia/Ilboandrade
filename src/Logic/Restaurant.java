@@ -84,12 +84,12 @@ public class Restaurant {
         this.waiters = new Consumer[waitersLimit];
 
         //  HIRING INITIAL PRODUCERS
-        for (int i = 0; i < initMainChef; i++) {
-            this.hireMainChef();
-        }
-
         for (int i = 0; i < initEntryChef; i++) {
             this.hireEntryChef();
+        }
+
+        for (int i = 0; i < initMainChef; i++) {
+            this.hireMainChef();
         }
 
         for (int i = 0; i < initDessertChef; i++) {
@@ -99,6 +99,7 @@ public class Restaurant {
         //  HIRING INITIAL WAITERS
         for (int i = 0; i < initWaiters; i++) {
             this.hireWaiter();
+
         }
 
     }
@@ -109,13 +110,14 @@ public class Restaurant {
 
     //  Timer View Remember me
     public boolean hireMainChef() {
+        System.out.println("*\n*\n*\n*\n*\nHiring Main Chef\n*\n*\n*\n*\n*\n");
         if (this.mainChefCounter == this.mainChef.length) {
             JOptionPane.showMessageDialog(null, "Can't hire any more Chef!");
             return false;
         } else {
             for (int i = 0; i < this.mainChef.length; i++) {
                 if (this.mainChef[i] == null) {
-                    this.mainChef[i] = new Producer(this.mainMes, this.smMutex, this.sMainChef, this.sMainConsumer, this.getHour() / 3, 1);
+                    this.mainChef[i] = new Producer(this.mainMes, this.smMutex, this.sMainChef, this.sMainConsumer, this.getHour() / 3, 2);
                     this.mainChef[i].start();
                     this.mainChefCounter++;
 
@@ -128,13 +130,14 @@ public class Restaurant {
     }
 
     public boolean hireEntryChef() {
+        System.out.println("*\n*\n*\n*\n*\nHiring Entry Chef\n*\n*\n*\n*\n*\n");
         if (this.entryChefCounter == this.entryChef.length) {
             JOptionPane.showMessageDialog(null, "Can't hire any more Chef!");
             return false;
         } else {
             for (int i = 0; i < this.entryChef.length; i++) {
                 if (this.entryChef[i] == null) {
-                    this.entryChef[i] = new Producer(this.entryMes, this.seMutex, this.sEntryChef, this.sEntryConsumer, this.getHour() / 4, 2);
+                    this.entryChef[i] = new Producer(this.entryMes, this.seMutex, this.sEntryChef, this.sEntryConsumer, this.getHour() / 4, 1);
                     this.entryChef[i].start();
                     this.entryChefCounter++;
 
@@ -147,6 +150,7 @@ public class Restaurant {
     }
 
     public boolean hireDessertChef() {
+        System.out.println("*\n*\n*\n*\n*\nHiring Dessert Chef\n*\n*\n*\n*\n*\n");
         if (this.dessertChefCounter == this.dessertChef.length) {
             JOptionPane.showMessageDialog(null, "Can't hire any more Chef!");
             return false;
@@ -166,6 +170,7 @@ public class Restaurant {
     }
 
     public boolean hireWaiter() {
+        System.out.println("*\n*\n*\n*\n*\nHiring Waiter\n*\n*\n*\n*\n*\n");
         if (this.waitersCounter == this.waiters.length) {
             JOptionPane.showMessageDialog(null, "Can't hire any more Waiter!");
             return false;
@@ -235,7 +240,7 @@ public class Restaurant {
                     this.dessertChef[i].Fire();
                     this.dessertChef[i] = null;
                     this.dessertChefCounter--;
-                    
+
                     return true;
                 }
             }

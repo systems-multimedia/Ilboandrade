@@ -39,32 +39,39 @@ public class Consumer extends Thread {
 
     @Override
     public void run() {
-        while (this.hire == true) {
+        while (true) {
             try {
+                System.out.println("1 Acquire Consumer");
                 this.sEntryConsumer.acquire(3);
-                this.sMainConsumer.acquire(2);
-                this.sDessertConsumer.acquire();
-
                 //  CS ENTRIES
                 this.sEntryMutex.acquire();
+                System.out.println("Entry Mutex Acquire Consumer");
                 for (int i = 0; i < 3; i++) {
                     this.mEntry.cook(Restaurant.entryMesPointer, 0);
                     Restaurant.entryMesPointer = (Restaurant.entryMesPointer + 1) % this.mEntry.getSize();
                 }
                 Restaurant.substractEntry();    // # OF ENTRIES - 3
                 this.sEntryMutex.release();
-
+                
+                System.out.println("2 Acquire Consumer");
+                this.sMainConsumer.acquire(2); 
                 //  CS MAIN DISHES
                 this.sMainMutex.acquire();
+                System.out.println("Main Mutex Acquire Consumer");
                 for (int i = 0; i < 2; i++) {
                     this.mMain.cook(Restaurant.mainMesPointer, 0);
                     Restaurant.mainMesPointer = (Restaurant.mainMesPointer + 1) % this.mMain.getSize();
                 }
                 Restaurant.substractMain();     //  # OF MAIN DISHES -2
                 this.sMainMutex.release();
+                this.sDessertConsumer.acquire();
+                System.out.println("3 Acquire Consumer");
+
+                
 
                 //  CS DESSERTS
                 this.sDessertMutex.acquire();
+                System.out.println("Dessert Mutex Acquire Consumer");
                 this.mDessert.cook(Restaurant.dessertMesPointer, 0);
                 Restaurant.dessertMesPointer = (Restaurant.dessertMesPointer + 1) % this.mDessert.getSize();
                 Restaurant.substractDessert();  //  # OF DESSERTS - 1

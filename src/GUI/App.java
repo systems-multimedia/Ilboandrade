@@ -5,7 +5,6 @@
  */
 package GUI;
 
-import Logic.Meson;
 import Logic.Producer;
 import GUI.Buttons.FireBtn;
 import GUI.Buttons.HireBtn;

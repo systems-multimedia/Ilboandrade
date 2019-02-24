@@ -25,12 +25,13 @@ public class Producer extends Thread {
 
     @Override
     public void run() {
-        while (this.hired == true) {
+        while (true) {
             try {
                 this.sChef.acquire();
                 //Thread.sleep(this.time);
+                System.out.println("1 Acquire Producer");
                 this.sMutex.acquire();
-
+                System.out.println("Mutex Acquire Producer");
                 switch (this.type) {
                     case 1:
                         this.meson.cook(Restaurant.mainChefPointer, 1);
@@ -49,7 +50,9 @@ public class Producer extends Thread {
                         break;
                 }
                 this.sWaiter.release();
+                System.out.println("1 Release Producer");
                 this.sMutex.release();
+                System.out.println("2 Release Producer");
             } catch (InterruptedException ex) {
                 Logger.getLogger(Producer.class.getName()).log(Level.SEVERE, null, ex);
             }

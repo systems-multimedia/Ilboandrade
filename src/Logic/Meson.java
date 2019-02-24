@@ -38,7 +38,9 @@ public class Meson {
 
     public void cook(int i, int data) {
         meson[i] = data;
+        System.out.println("______________________");
         System.out.println("Cooked " + data);
+        System.out.println("----------------------");
     }
 
 }
