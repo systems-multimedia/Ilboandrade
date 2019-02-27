@@ -120,7 +120,6 @@ public class Consumer extends Thread {
                 for (int i = 0; i < 3; i++) {
                     this.eMes.cook(Restaurant.eCosPointer, 0);
                     Restaurant.eCosPointer = (Restaurant.eCosPointer + 1) % this.eMes.getSize();
-                    //System.out.println("Consumer entry " + this.getName() + " || Queue => " + seCon.getQueueLength());
                 }
                 Restaurant.subEntryCount();
                 this.seMutex.release();
@@ -129,7 +128,6 @@ public class Consumer extends Thread {
                 for (int i = 0; i < 2; i++) {
                     this.mMes.cook(Restaurant.mCosPointer, 0);
                     Restaurant.mCosPointer = (Restaurant.mCosPointer + 1) % this.mMes.getSize();
-                    //System.out.println("Consumer main " + this.getName() + " || Queue => " + seCon.getQueueLength());
                 }
                 Restaurant.subMainCount();
                 this.smMutex.release();
@@ -138,7 +136,6 @@ public class Consumer extends Thread {
                 this.dMes.cook(Restaurant.dCosPointer, 0);
                 Restaurant.dCosPointer = (Restaurant.dCosPointer + 1) % this.dMes.getSize();
                 Restaurant.subDesCount();
-                //System.out.println("Consumer dessert " + this.getName() + " || Queue => " + seCon.getQueueLength());
                 this.sdMutex.release();
 
                 this.seProd.release(3);
@@ -155,6 +152,7 @@ public class Consumer extends Thread {
     private void Serve() throws InterruptedException {
         Thread.sleep(this.time);
         System.out.println("Served");
+        Reader.addOrder();
     }
 
     public void Fire() {

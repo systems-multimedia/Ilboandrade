@@ -35,6 +35,7 @@ public class Producer extends Thread {
         this.type = type;
         this.hired = true;
         this.name = name;
+        System.out.println("Chef Hired!");
     }
 
     @Override
@@ -44,20 +45,22 @@ public class Producer extends Thread {
                 this.sProd.acquire();
                 Thread.sleep(this.time);
                 this.mutex.acquire();
-                //System.out.println("Prod " + this.getName() + ' ' + type + " || Queue => " + sProd.getQueueLength());
                 switch (this.type) {
                     case 1:
                         this.mes.cook(Restaurant.ePointer, type);
+                        System.out.println("Entry Cooked || Space left " + this.mes.getSpaceLeft());
                         Restaurant.ePointer = (Restaurant.ePointer + 1) % this.mes.getSize();
                         Restaurant.addEntryCount();
                         break;
                     case 2:
                         this.mes.cook(Restaurant.mPointer, type);
+                        System.out.println("Main Cooked || Space left " + this.mes.getSpaceLeft());
                         Restaurant.mPointer = (Restaurant.mPointer + 1) % this.mes.getSize();
-                        Restaurant.addEntryCount();
+                        Restaurant.addMainCount();
                         break;
                     case 3:
                         this.mes.cook(Restaurant.dPointer, type);
+                        System.out.println("Dessert Cooked || Space left " + this.mes.getSpaceLeft());
                         Restaurant.dPointer = (Restaurant.dPointer + 1) % this.mes.getSize();
                         Restaurant.addDesCount();
                         break;
@@ -66,9 +69,7 @@ public class Producer extends Thread {
                 this.sCon.release();
             } catch (InterruptedException ex) {
                 Logger.getLogger(Producer.class.getName()).log(Level.SEVERE, null, ex);
-            } /*catch (ArrayIndexOutOfBoundsException aex) {
-                System.out.println("Out of Bound at " + Restaurant.ePointer + ' ' + name + " || " + this.mes.getName());
-            }*/
+            }
         }
     }
 

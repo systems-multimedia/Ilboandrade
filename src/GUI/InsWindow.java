@@ -36,7 +36,7 @@ public class InsWindow extends JFrame {
     private final JButton startBtn;
     private final Cursor pointer;
     private final JLabel background;
-    
+
     private final InfoWindow infoWindow;
     private App app;
 
@@ -154,12 +154,8 @@ public class InsWindow extends JFrame {
     }
 
     private void startBtnActionPerformed() {
-        
-        this.app = new App(width, height, this);
-        this.app.start();
-        this.app.setVisible(true);
-        this.app.setEnabled(true);
 
+        JSON_Reader json = new JSON_Reader(width, height, this);
         this.setVisible(false);
         this.setEnabled(false);
     }

@@ -23,7 +23,7 @@ public class Meson {
     }
 
     public void cook(int i, int data) {
-        meson[i] = data;
+        meson[i] = data;/*
         System.out.println("______________________");
         switch (data) {
             case 0:
@@ -39,7 +39,20 @@ public class Meson {
                 System.out.println("Cooked dessert " + data);
                 break;
         }
-        System.out.println("----------------------");
+        System.out.println("----------------------");*/
+    }
+
+    public int getSpaceLeft() {
+        int temp = this.meson.length;
+        for (int i = 0; i < this.meson.length; i++) {
+            if (this.meson[i] != 0) {
+                temp--;
+            } else {
+                return temp;
+            }
+        }
+        
+        return 0;
     }
 
 }

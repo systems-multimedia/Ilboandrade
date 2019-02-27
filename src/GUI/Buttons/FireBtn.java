@@ -36,13 +36,17 @@ public class FireBtn extends JButton {
         this.setCursor(pointer);
     }
 
-    public void setEnabled(boolean enabled) {
+    public void setEnabledIcon(boolean enabled) {
         this.enabled = enabled;
         if (enabled) {
             this.setIcon(new ImageIcon(this.enabledIcon.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH)));
         } else {
             this.setIcon(new ImageIcon(this.disabledIcon.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH)));
         }
+    }
+
+    public boolean isEnabledBtn() {
+        return this.enabled;
     }
 
 }

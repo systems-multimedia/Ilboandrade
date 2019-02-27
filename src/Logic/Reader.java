@@ -35,21 +35,24 @@ public class Reader extends Thread {
                 int random = ((int) (Math.random() * (this.maxTime - this.minTime)) + this.minTime);
                 this.status = true;
                 Thread.sleep(this.minTime * 4 - random);                //Verificar que funciona sin el this.minTime*4
-                System.out.println("Reader Reading");
+                //System.out.println("Reader Reading");
                 this.mutex.acquire();
-                System.out.println("**************");
+                /*System.out.println("**************");
                 System.out.println("Reader Reading");
-                System.out.println("**************");
+                System.out.println("**************");*/
                 if (Writer.getHoursLeft() == 0) {
                     this.orders = 0;
                     Thread.sleep(this.changeTime);
                     Writer.initHoursLeft(this.hoursToClose);
-                    System.out.println("/////////////////////////////////////////////");
+                    /*System.out.println("/////////////////////////////////////////////");
                     System.out.println("New Day, new Objects... Starting Positively :)");
-                    System.out.println("/////////////////////////////////////////////");
+                    System.out.println("/////////////////////////////////////////////");*/
                 }
                 this.status = false;
                 this.mutex.release();
+                /*System.out.println("zZzZzZzZzZzZzZzZzZzZzZ");
+                System.out.println("Reader Sleeping zZzZzZ");
+                System.out.println("zZzZzZzZzZzZzZzZzZzZzZ");*/
                 Thread.sleep(random);
             } catch (InterruptedException ex) {
                 Logger.getLogger(Reader.class.getName()).log(Level.SEVERE, null, ex);
