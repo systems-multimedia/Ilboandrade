@@ -85,7 +85,6 @@ public class App extends JFrame {
         this.setLocationRelativeTo(null);
         this.setResizable(false);
         this.setUndecorated(true);
-        this.lblFont = new Font("Tahoma", 1, 36);
 
         this.bg = new ImageIcon(getClass().getResource("/Img/Background/4. Main.png"));
         this.background = new JLabel();
@@ -101,7 +100,7 @@ public class App extends JFrame {
         this.btnSizeW = (this.btnSizeH * 386) / 144;
         this.marginX = (this.width * this.marginPercent + 3) / 100;
         this.marginY = (this.height * this.marginPercent) / 100;
-
+        this.lblFont = new Font("Tahoma", 1, this.smallSquareBtnSize + 3);
         this.bc = new ImageIcon(getClass().getResource("/Img/Buttons/3. Minimize (Black).png"));
         this.hideBtn = new JButton();
         this.hideBtn.setSize(new Dimension(this.smallSquareBtnSize, this.smallSquareBtnSize));
@@ -163,7 +162,7 @@ public class App extends JFrame {
         App.managerLbl = new JLabel();
         App.managerLbl.setSize(new Dimension(94, (this.smallSquareBtnSize + 3)));
         App.managerLbl.setLocation((this.width * 7) / 100, this.height - (this.height * 19) / 100);
-        App.managerLbl.setFont(new Font("Tahoma", 1, 18));
+        App.managerLbl.setFont(new Font("Tahoma", 1, this.smallSquareBtnSize));
         App.managerLbl.setForeground(Color.white);
         App.managerLbl.setHorizontalAlignment(SwingConstants.CENTER);
         //App.managerLbl.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
@@ -177,14 +176,14 @@ public class App extends JFrame {
         App.wBossLbl = new JLabel();
         App.wBossLbl.setSize(new Dimension(94, (this.smallSquareBtnSize + 3)));
         App.wBossLbl.setLocation((this.width * 23) / 100, this.height - (this.height * 19) / 100);
-        App.wBossLbl.setFont(new Font("Tahoma", 1, 18));
+        App.wBossLbl.setFont(new Font("Tahoma", 1, this.smallSquareBtnSize));
         App.wBossLbl.setForeground(Color.white);
         App.wBossLbl.setHorizontalAlignment(SwingConstants.CENTER);
 
         App.timer = new JLabel();
         App.timer.setSize(new Dimension(210, (this.smallSquareBtnSize + 5)));
-        App.timer.setLocation((this.width * 19) / 100, (this.height * 13) / 100);
-        App.timer.setFont(new Font("Calibri", 1, 42));
+        App.timer.setLocation((this.width * 17) / 100, (this.height * 13) / 100);
+        App.timer.setFont(new Font("Calibri", 1, this.smallSquareBtnSize + 5));
         App.timer.setForeground(new Color(212, 40, 11));
         App.timer.setHorizontalAlignment(SwingConstants.CENTER);
 
@@ -541,6 +540,6 @@ public class App extends JFrame {
     }
 
     public void playEg() {
-        
+
     }
 }
