@@ -54,3 +54,17 @@ momento, el gerente espera a que él termine antes de leer. Si el contador es
 distinto a 0, el gerente va a descansar en su oficina, por un período aleatorio entre
 0,45 y 2 horas. Si el contador es igual a 0, el gerente manda a pagar todas las
 órdenes, reinicializando el contador, lo que le toma 0,1 horas de trabajo.
+
+# Views
+
+## MENU
+![Menu](others/Views/PC-menu.png)
+
+## INSTRUCTIONS
+![Instructions](others/Views/PC-instructions.png)
+
+## APP
+![App](others/Views/PC-app.png)
+
+## CREDITS
+![Credits](others/Views/PC-credits.png)
