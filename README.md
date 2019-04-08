@@ -68,3 +68,19 @@ distinto a 0, el gerente va a descansar en su oficina, por un período aleatorio
 
 ## CREDITS
 ![Credits](others/Views/PC-credits.png)
+
+## ***Creditos***
+
+Proyecto realizado por
+* [Samuel Boada](https://github.com/systems-multimedia).
+* [Marcos De Andrade](https://github.com/MarcosDeAndrade)
+
+## ***Licencia***
+
+[GPL-3.0](https://github.com/systems-multimedia/Ilboandrade/blob/master/LICENSE)
+
+&nbsp;
+
+<p align="center">✌️</p>
+<p align="center">
+<sub><sup>A project by <a href="https://github.com/systems-multimedia">Samuel Boada</a> & <a href="https://github.com/MarcosDeAndrade">Marcos De Andrade</a><br>Copyright (c) 2019</sup></sub></p>
